@@ -3,24 +3,25 @@
 #include<QCoreApplication>
 
 
-HttpClient::HttpClient(int argc, char* argv[], QObject *parent) : QObject(parent)
+HttpClient::HttpClient(QObject *parent) : QObject(parent)
 {
-    m_hostname = argv[1];
-       unsigned short port = 80;
-       m_socket = new QTcpSocket(this);
-       bool status=false;
+
+
        // Signal ->  Slot-Verbindung
        connect(m_socket, &QTcpSocket::connected, this, &HttpClient::connected);
        connect(m_socket, &QTcpSocket::readyRead, this, &HttpClient::readyRead);
+}
 
-       m_socket->connectToHost(m_hostname, port); // TCP Connect
+void HttpClient::HTTP(QString& host)
+{
+       m_socket->connectToHost(host, port); // TCP Connect
        if (!m_socket->waitForConnected(5000)) {
-           status=true;
-           qDebug() << "Connect failed!";
-           exit(1);
 
+           m_socket-> disconnectFromHost();
+           m_notification="Konnte keine Verbindung aufbauen";
+           emit scanFinished(m_notification);
        }
-       emit scanFinished(m_hostname,status);
+
 
 }
 void HttpClient::connected()
@@ -32,8 +33,9 @@ void HttpClient::connected()
 void HttpClient::readyRead()
 {
     // HTTP-Antwort vom Server
-    qDebug() << m_socket->readAll();
+
+    m_notification=m_socket->readAll();
+    emit scanFinished(m_notification);
     m_socket->disconnectFromHost();
-    QCoreApplication::quit();
 }
 

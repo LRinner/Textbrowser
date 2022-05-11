@@ -1,5 +1,5 @@
 #include "gui.h"
-#include<QtDebug>
+
 
 Gui::Gui(QWidget *parent) :
     QWidget(parent)
@@ -11,17 +11,15 @@ Gui::Gui(QWidget *parent) :
 
     void Gui::on_goButton_clicked()
     {
-        QByteArray host=hostEntry->text().toUtf8();
+        QString host=hostEntry->text();
 
         m_scanner.readyRead();
 
     }
-    void Gui::showResult(QByteArray m_hostname, bool status)
+    void Gui::showResult(QString m_hostname)
     {
-        qDebug() << m_hostname<<status;
-        QString msg=(status==true)? "open":"closed";
-        QString result=QString::number(status)+ "->"+msg;
-        resultBrowser->append(result);
+
+        resultBrowser->append(m_hostname);
 
 
 

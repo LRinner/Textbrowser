@@ -12,7 +12,7 @@ public:
     explicit Gui(QWidget *parent = nullptr);
 private slots:
     void on_goButton_clicked();   //from GUI-Widget
-    void showResult(QByteArray m_hostname, bool status);
+    void showResult(QString m_hostname);
 
 private:
     HttpClient m_scanner;
